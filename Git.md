@@ -467,3 +467,177 @@ index 8ebb991..643e24f 100644
  If you are starting to work on a particular area, feel free to submit a PR
  that highlights your work in progress (and note in the PR title that it's
 ```
+
+## Committing Your Changes
+
+Now that your staging area is set up the way you want it, you can commit your changes. Remember that anything that is still unstaged — any files you have created or modified that you haven’t run `git add` on since you edited them — won’t go into this commit. They will stay as modified files on your disk. In this case, let’s say that the last time you ran `git status`, you saw that everything was staged, so you’re ready to commit your changes. The simplest way to commit is to type `git commit`:
+
+```console
+$ git commit
+```
+
+Doing so launches your editor of choice.
+
+The editor displays the following text (this example is a Vim screen):
+
+```
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   README
+#	modified:   CONTRIBUTING.md
+#
+~
+~
+~
+".git/COMMIT_EDITMSG" 9L, 283C
+```
+
+You can see that the default commit message contains the latest output of the `git status` command commented out and one empty line on top. You can remove these comments and type your commit message, or you can leave them there to help you remember what you’re committing.
+
+When you exit the editor, Git creates your commit with that commit message (with the comments and diff stripped out).
+
+Alternatively, you can type your commit message inline with the `commit` command by specifying it after a `-m` flag, like this:
+
+```console
+$ git commit -m "Story 182: fix benchmarks for speed"
+[master 463dc4f] Story 182: fix benchmarks for speed
+ 2 files changed, 2 insertions(+)
+ create mode 100644 README
+```
+
+Now you’ve created your first commit! You can see that the commit has given you some output about itself: which branch you committed to (`master`), what SHA-1 checksum the commit has (`463dc4f`), how many files were changed, and statistics about lines added and removed in the commit.
+
+Remember that the commit records the snapshot you set up in your staging area. Anything you didn’t stage is still sitting there modified; you can do another commit to add it to your history. Every time you perform a commit, you’re recording a snapshot of your project that you can revert to or compare to later.
+
+## Skipping the Staging Area
+
+Although it can be amazingly useful for crafting commits exactly how you want them, the staging area is sometimes a bit more complex than you need in your workflow. If you want to skip the staging area, Git provides a simple shortcut. Adding the `-a` option to the `git commit` command makes Git automatically stage every file that is already tracked before doing the commit, letting you skip the `git add` part:
+
+```console
+$ git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+    modified:   CONTRIBUTING.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+$ git commit -a -m 'Add new benchmarks'
+[master 83e38c7] Add new benchmarks
+ 1 file changed, 5 insertions(+), 0 deletions(-)
+```
+
+Notice how you don’t have to run `git add` on the `CONTRIBUTING.md` file in this case before you commit. That’s because the `-a` flag includes all changed files. This is convenient, but be careful; sometimes this flag will cause you to include unwanted changes.
+
+## Removing Files
+
+To remove a file from Git, you have to remove it from your tracked files (more accurately, remove it from your staging area) and then commit. The `git rm` command does that, and also removes the file from your working directory so you don’t see it as an untracked file the next time around.
+
+If you simply remove the file from your working directory, it shows up under the “Changes not staged for commit” (that is, *unstaged*) area of your `git status` output:
+
+```console
+$ rm PROJECTS.md
+$ git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        deleted:    PROJECTS.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+Then, if you run `git rm`, it stages the file’s removal:
+
+```console
+$ git rm PROJECTS.md
+rm 'PROJECTS.md'
+$ git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+    deleted:    PROJECTS.md
+```
+
+The next time you commit, the file will be gone and no longer tracked. If you modified the file or had already added it to the staging area, you must force the removal with the `-f` option. This is a safety feature to prevent accidental removal of data that hasn’t yet been recorded in a snapshot and that can’t be recovered from Git.
+
+Another useful thing you may want to do is to keep the file in your working tree but remove it from your staging area. In other words, you may want to keep the file on your hard drive but not have Git track it anymore. This is particularly useful if you forgot to add something to your `.gitignore` file and accidentally staged it, like a large log file or a bunch of `.a` compiled files. To do this, use the `--cached` option:
+
+```console
+$ git rm --cached README
+```
+
+You can pass files, directories, and file-glob patterns to the `git rm` command. That means you can do things such as:
+
+```console
+$ git rm log/\*.log
+```
+
+Note the backslash (`\`) in front of the `*`. This is necessary because Git does its own filename expansion in addition to your shell’s filename expansion. This command removes all files that have the `.log` extension in the `log/` directory. Or, you can do something like this:
+
+```console
+$ git rm \*~
+```
+
+This command removes all files whose names end with a `~`.
+
+## Moving Files
+
+Unlike many other VCSs, Git doesn’t explicitly track file movement. If you rename a file in Git, no metadata is stored in Git that tells it you renamed the file. However, Git is pretty smart about figuring that out after the fact — we’ll deal with detecting file movement a bit later.
+
+Thus it’s a bit confusing that Git has a `mv` command. If you want to rename a file in Git, you can run something like:
+
+```console
+$ git mv file_from file_to
+```
+
+and it works fine. In fact, if you run something like this and look at the status, you’ll see that Git considers it a renamed file:
+
+```console
+$ git mv README.md README
+$ git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+    renamed:    README.md -> README
+```
+
+However, this is equivalent to running something like this:
+
+```console
+$ mv README.md README
+$ git rm README.md
+$ git add README
+```
+
+Git figures out that it’s a rename implicitly, so it doesn’t matter if you rename a file that way or with the `mv` command. The only real difference is that `git mv` is one command instead of three — it’s a convenience function. More importantly, you can use any tool you like to rename a file, and address the add/rm later, before you commit.
+
+# 配置远程仓库
+
+git-bash中运行
+
+`ssh-keygen -o`生成ssh密钥，把公钥加到github上
+
+然后为文件夹设置远程仓库地址
+
+```console
+git remote add origin git@github.com:RonSilvertongue/For-Knowledge.git
+```
+
+将文件夹中的内容放到github上
+
+```console
+$ git push origin master
+```
