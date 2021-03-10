@@ -149,7 +149,7 @@ MySQL引擎在物理文件上的区别
 
 2. 确定使用哪种连接查询,一共有7种
 
-   ![image-20210224200649868](C:\Users\10645\Desktop\MarkDown\MySql.assets\image-20210224200649868.png)
+   ![image-20210224200649868](MySql.assets\image-20210224200649868.png)
 
 3. 确定交叉点,即两张表都有的字段
 

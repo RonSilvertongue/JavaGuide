@@ -21,7 +21,7 @@
 
    - 在cmd中用**java -version**命令测试是否成功
 
-     ![image-20210212222532040](C:\Users\10645\Desktop\MarkDown\Java.assets\image-20210212222532040.png)
+     ![image-20210212222532040](Java.assets\image-20210212222532040.png)
 
 
 
@@ -49,7 +49,7 @@ public class HelloWorld {
 
    运行使用命令**java 文件名** 运行的是.class文件
 
-   ![image-20210212221938164](C:\Users\10645\Desktop\MarkDown\Java.assets\image-20210212221938164.png)
+   ![image-20210212221938164](Java.assets\image-20210212221938164.png)
 
 
 
@@ -147,7 +147,7 @@ public abstract XXX class{}
 
 # 异常
 
-![image-20210218225147470](C:\Users\10645\AppData\Roaming\Typora\typora-user-images\image-20210218225147470.png)
+![image-20210218225147470](Java.assets/image-20210218225147470.png)
 
 
 
@@ -207,13 +207,13 @@ try、catch、finally、throw、throws
 
 ## 元注解
 
-![image-20210218232700705](C:\Users\10645\AppData\Roaming\Typora\typora-user-images\image-20210218232700705.png)
+![image-20210218232700705](Java.assets/image-20210218232700705.png)
 
 @Retention用来表示注解在什么时期有效，SOURCE源代码有效，CLASS被编译成Class文件后也有效，RUNTIME 运行时期也有效
 
 ## 自定义注解
 
-![image-20210218233914494](C:\Users\10645\AppData\Roaming\Typora\typora-user-images\image-20210218233914494.png)
+![image-20210218233914494](Java.assets/image-20210218233914494.png)
 
 
 
@@ -259,7 +259,7 @@ Class c1 = Class.class;//Class
 2. 类的链接，将类的二进制数据合并到JRE中
 3. 类的初始化，JVM负责对类进行初始化
 
-![image-20210219003413461](C:\Users\10645\AppData\Roaming\Typora\typora-user-images\image-20210219003413461.png)
+![image-20210219003413461](Java.assets/image-20210219003413461.png)
 
 类加载过程中，初始化阶段仅仅初始化静态成员变量以及静态代码块；
 
@@ -301,9 +301,9 @@ utf-8代表一个字符集以及一个编码方式
 
 1. web app中，maven会将src目录下的所有文件编译打包到WEB-INF文件下，src/main/resources文件夹会被删除，里面的文件统一打包到WEB-INF/classes文件夹下面，src/main/java下的目录结构会保留，并打包到WEB-INF/classes下。
 
-   ![image-20210222182410936](C:\Users\10645\Desktop\MarkDown\Java.assets\image-20210222182410936.png)
+   ![image-20210222182410936](Java.assets/image-20210222182410936-1615391997770.png)
 
-   ![image-20210222182545326](C:\Users\10645\Desktop\MarkDown\Java.assets\image-20210222182545326.png)
+   ![image-20210222182545326](Java.assets\image-20210222182545326.png)
 
    classes文件夹就是**常说的类路径**
 
@@ -311,7 +311,7 @@ utf-8代表一个字符集以及一个编码方式
 
    - ​	java下的文件在没有POM设置的情况下，仅编译并打包.java文件，其余资源文件一概忽略；POM设置如下
 
-     ![image-20210222182926327](C:\Users\10645\Desktop\MarkDown\Java.assets\image-20210222182926327.png)
+     ![image-20210222182926327](Java.assets\image-20210222182926327.png)
 
    - 若要正常访问资源文件，最好全放在resources文件夹下面
    

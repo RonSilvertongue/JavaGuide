@@ -368,7 +368,7 @@ public class MyTest {
 - 切入点PointCut ：切面通知执行的“地点”的定义
 - 连接点JoinPoint ：与切入点匹配的执行点。即，进行通知的时机，条件
 
-![image-20210308195328186](C:\Users\10645\Desktop\MarkDown\Spring.assets\image-20210308195328186.png)
+![image-20210308195328186](Spring.assets\image-20210308195328186.png)
 
 
 
@@ -390,7 +390,7 @@ public class MyTest {
 
 **实现方式1：使用Spring的接口**
 
-![image-20210308204601852](C:\Users\10645\Desktop\MarkDown\Spring.assets\image-20210308204601852.png)
+![image-20210308204601852](Spring.assets\image-20210308204601852.png)
 
 ``` xml
     <aop:config>

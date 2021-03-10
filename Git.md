@@ -159,7 +159,7 @@ Git has a number of different transfer protocols you can use. The previous examp
 
  > untracked files are everything else — any files in your working directory that were not in your last **snapshot** and are not in your **staging area**. When you first clone a repository, all of your files will be tracked and unmodified because Git just checked them out and you haven’t edited anything.
 
-![image-20210310224605557](C:\Users\10645\Desktop\MarkDown\Git.assets\image-20210310224605557.png)
+![image-20210310224605557](Git.assets/image-20210310224605557.png)
 
 Figure 8. The lifecycle of the status of your files
 
