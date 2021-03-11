@@ -1,3 +1,7 @@
+[toc]
+
+
+
 # 1 Mybatis（ORM，对象关系映射框架）
 
 环境：
@@ -664,7 +668,7 @@ User userOfEmail = userMapper.findByColumn("email", "noone@nowhere.com");
 
 在Mybatis中具体使用哪一个日志实现，需要在设置中设定
 
-## 7.2 **STDOUT_LOGGING** 标准日志输出
+## 7.2 STDOUT_LOGGING 标准日志输出
 
 ![image-20210311184632750](Mybatis（ORM，对象关系映射框架）.assets/image-20210311184632750.png)
 
@@ -1025,9 +1029,9 @@ public class Teacher {
 
 
 
-# 12 鉴别器
+# 12 鉴别器 //TODO
 
-# 13 自动映射
+# 13 自动映射 //TODO
 
 # 14 缓存
 
