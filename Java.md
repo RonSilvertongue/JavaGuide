@@ -342,5 +342,43 @@ utf-8代表一个字符集以及一个编码方式
 
 2. idea中启动tomcat控制台乱码，将tomcat的conf/logging.properties文件中的所有UTF-8全部改为GBK即可
 
-3. idea创建maven普通项目后，通过项目右键add Framework support中选择javaweb框架创建的maven java web的应用，在编译的时候不会编译source目录下的java文件，导致web请求无法处理，控制台提示找不到类，目前解决方案为不适用此方法创建web项目
+3. idea创建maven普通项目后，通过项目右键add Framework support中选择javaweb框架创建的maven java web的应用，在编译的时候不会编译src目录下的java文件，导致web请求无法处理，控制台提示找不到类，目前解决方案为不使用此方法创建web项目；
+
+   -------------------------------2021/3/12更新-----------------------------------
+
+   对一个Module这样操作是可以正常使用的，暂时不知道为什么；
+
+   再一次尝试，还是不行;
+
+   在手动执行Maven的install时提示了找不到web.xml，
+
+   网上有人说Maven默认是去找src/main/web/WEB-INF/web.xml
+
+   解决方法：在pom文件中配置一下web.xml文件的位置
+
+   ``` xml
+   <build>
+       <plugins>
+           <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-war-plugin</artifactId>
+               <version>2.2</version>
+               <configuration>
+                   <!-- 指定web.xml的路径  -->
+                   <webXml>web\WEB-INF\web.xml</webXml>
+                   <!-- 指定jsp、js、css的路劲 -->
+                   <warSourceDirectory>web</warSourceDirectory>
+               </configuration>
+           </plugin>
+       </plugins>
+   </build>
+   ```
+
+   运行项目时竟然正确的编译了java文件，
+
+   >  猜想：虽然Idea标记了项目根目录下的web文件夹，但是maven不去这里找web.xml，所以导致在运行项目时不会正确的编译java文件。
+
+   重新创建了一个新的项目，然后在没有配置web.xml位置的情况下跑了下项目，竟然也正确的编译了java文件。
+
+   > 总结：Maven抽风了叭？！
 
