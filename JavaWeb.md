@@ -137,6 +137,8 @@ pom.xml 是maven的核心配置文件
 
 ​	一系列实现了Servlet接口的类可以对外提供服务，这些类组成了小服务程序。
 
+> [Servlet说明书](https://jcp.org/aboutJava/communityprocess/final/jsr340/index.html)
+
 ### 6.2 HelloServlet
 
 Servlet接口Sun公司有两个默认的实现类：HttpServlet、
@@ -254,7 +256,45 @@ Servlet是由Web服务器调用，web服务器在收到浏览器请求之后：
      </servlet-mapping>
    ```
 
-   
+#### 6.4.1 关于URL Pattern
+
+requestURI = context path+servlet path+path info
+
+![image-20210316192720448](JavaWeb.assets/image-20210316192720448.png)
+
+总结：
+
+- context path 就是项目名称
+- 配置在web.xml中url-pattern结点中的url都是servlet path
+  - 注意，后缀匹配的path info是null
+  - 注意，默认Servlet的path info 也是null
+- 在servlet path之后的内容都是path info
+
+URL匹配的规则如下：
+
+1. 完整路径匹配
+2. 根据路径前缀，进行最长匹配
+3. 使用请求路径中的后缀进行匹配，如".jsp"
+4. **如果以上都没有匹配到合适的Servlet，将使用默认Servlet来处理请求**
+
+##### 6.4.1.1 如何配置URL Pattern
+
+1. 使用“ / ”开头，使用“ /\* ”结尾，表示使用路径匹配，比如/foo/bar/\*
+2. 使用” *.xxx “表示使用后缀匹配
+3. 只使用“ /* ”，表示匹配所有的请求
+4. 只使用“ / ”，表示所对应的Servlet是一个**默认的Servlet**
+
+
+
+##### 6.4.1.2 关于SpringMVC的DispatcherServlet的URL Mapping
+
+其URL-Pattern只能配置" / "，让其变成默认Servlet（默认Servlet的优先级最低）
+
+虽然需要DispatcherServlet处理大部分请求，但是如果配置成”/*“（表示匹配所有请求），就会匹配到所有请求，包括后缀为".jsp"的请求。
+
+当匹配到".jsp"的请求后，由于Controller中还会调用".jsp"请求，此请求还会进入到DispatcherServlet会找不到与".jsp"请求相对应的Handler（也就是Controller）就会爆出404错误
+
+
 
 ### 6.5 ServletContext
 
