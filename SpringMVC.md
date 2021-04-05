@@ -193,7 +193,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
         https://www.springframework.org/schema/beans/spring-mvc.xsd">
 <!--    扫描指定包，使指定包下的注解生效-->
     <context:component-scan base-package="com.zcr.controller"/>
-<!--    让mvc不处理静态资源-->
+<!--    由于我们用DispatcherServlet覆盖了web容器默认的serlvet，所以当请求一些静态文件时，DispatcherServlet就会接收到改请求，导致找不到合适的处理器，出现404错误，静态文件如CSS文件等，jsp文件有专门的JspServlet去处理所以不受影响。综上，为了能正常访问静态文件，所以要配置default-servlet-handler，此配置会将没有对应处理器的静态文件的请求送给web容器的defaultServlet去处理，使得能够正常访问静态文件-->
     <mvc:default-servlet-handler/>
 <!--    使MVC支持使用注解开发-->
 <!--    在spring中一般采用@RequestMapping来完成映射关系-->
@@ -220,6 +220,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 - @Controller
   - 可使用在类上
   - 将类交由Spring容器管理
+  
 - @RequestMapping
   - 可指定映射路径和请求的方法，在指定映射路径和请求方法后和如下注解作用相同
     - @GetMapping
@@ -227,8 +228,25 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
     - @PutMapping
     - @DeleteMapping
   - 可以用在类和方法上
+  
+- @PathVariable
 
-# 4 RestFul API
+  - 在Restful风格的URL中获取URL上的参数
+
+    ``` java
+    @GetMapping("/owners/{ownerId}/pets/{petId}")
+    public Pet findPet(@PathVariable Long ownerId, @PathVariable Long petId) {
+        // ...
+    }
+    ```
+
+  - 在获取URL参数的值之后，SpringMVC会将其自动转化为合适的类型。若与方法参数的类型不匹配就会产生TypeMismatchException
+
+  - URL上的参数还可以用正则表达式 //TODO
+
+  - URL上还可以嵌入${}占位符，用了占位符之后会调用PropertyPlaceHolderConfigurer来对外部属性资源文件进行解析，从而使用正确的值替代占位符
+
+# 4 Restful API
 
 传统的API：localhost:8080/XXX?arg1=1&arg2=2
 
@@ -247,4 +265,100 @@ Restful API: localhost:8080/XXX/[arg1]/[arg2]，其中的arg1和2用具体数字
 
 
 # 5 重定向和转发
+
+重定向（改变URL）：
+
+```java
+@Controller
+@RequestMapping("/beforeTest")
+public class TestController {
+
+    @RequestMapping("/test")
+    public String test(){
+        return "redirect:beforeHello/hello";
+    }
+}
+```
+
+此处return的字符串中，beforeHello前没有“ / ”，这是一个相对路径，例子：
+
+当访问/beforeTest/test时，这个重定向会访问 /beforeTest/beforeHello/hello
+
+若在beforeHello前加上“ / ”，这个“ / ”表示项目根目录，重定向会访问 /beforeHello/hello
+
+
+
+转发（不改变URL）一样
+
+
+
+
+
+# 6 过滤器Filter
+
+Servlet版：
+
+创建一个类EncodingFilter，实现Filter接口
+
+```java
+public class EncodingFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        servletRequest.setCharacterEncoding("utf-8");
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+}
+```
+
+然后在web.xml 中配置过滤器
+
+```xml
+<filter>
+    <filter-name>EncodingFilter</filter-name>
+    <filter-class>com.zcr.filter.EncodingFilter</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>EncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+
+
+SpringMVC版：
+
+```xml
+<filter>
+    <filter-name>EncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+        <param-name>encoding</param-name>
+        <param-value>utf-8</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>EncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+SpringMVC内置了许多的过滤器
+
+
+
+# 遇见的问题以及解决方案
+
+1. 在编写数据库相关的属性文件的时候，如db.properties，加上jdbc前缀，以防和系统的相关变量重名，导致取错值
+
+   > 在使用c3p0时，我在db.properties中有键值对（username, root）其中username和系统变量重名了，导致c3p0在取username的值时取到了我的电脑用户名106458而非root，最后导致连接数据库失败
 

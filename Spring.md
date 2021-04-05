@@ -366,7 +366,7 @@ public class MyTest {
 - 目标Target ：被通知的对象
 - 代理Proxy ：向目标对象应用通知后创建的对象。
 - 切入点PointCut ：切面通知执行的“地点”的定义
-- 连接点JoinPoint ：与切入点匹配的执行点。即，进行通知的时机，条件
+- 连接点JoinPoint ：通知织入切入点之后形成连接点，可以通过连接点获取信息。
 
 ![image-20210308195328186](Spring.assets\image-20210308195328186.png)
 

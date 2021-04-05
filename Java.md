@@ -59,7 +59,7 @@ public class HelloWorld {
 
 类是对象的模板，是一类对象所具有的共同特征的抽象
 
-类中包含**属性（或字段）**和**方法**
+类中包含**属性（或字段或域）**和**方法**
 
 类的实质是一种**引用数据类型**，由于是一种**数据类型**，所以只有类被实例化为对象时才能被操作。
 
@@ -126,6 +126,8 @@ public abstract XXX class{}
 可以包含正常方法和属性
 
 有默认构造方法
+
+不能实例化
 
 
 
@@ -268,6 +270,192 @@ Class c1 = Class.class;//Class
 ### 什么时候会发生类的初始化
 
 ![image-20210219004707875](C:\Users\10645\AppData\Roaming\Typora\typora-user-images\image-20210219004707875.png)
+
+
+
+注意：静态代码块和静态变量的执行顺序是从上到下的，所以如果静态代码块中要给静态变量赋值，那么就需要将静态变量的定义放在静态代码块之前。
+
+# 泛型
+
+参数化的类型，提供了编译时类型安全监测机制，能够替代滥用的Object和强制类型转换，提高安全性和可读性。
+
+ * Java库中 E表示集合的元素类型，K 和 V分别表示表的关键字与值的类型
+ * T（需要时还可以用临近的字母 U 和 S）表示“任意类型”
+
+## 三种常用的泛型使用方式
+
+注意：
+
+1. 类型参数可以有多个<T,E,S......>
+2. <?>中的问号表示通配，被<?\>修饰的对象不能被修改，只能读取相关数据，即只读
+3. <? extends String>限定了类型的上界，即？必须是String的子类；只读
+4. <? super String>限定了类型的下界，即？必须是String的父类；只读
+5. 相同的还有<T extends String\>和<T super String\>;读写
+
+###  泛型类
+
+``` java
+public class test<T>{
+	private T property1;
+    
+    public T method1(T arg1){}
+}
+```
+
+### 泛型接口
+
+``` java
+interface test<T>{
+    public T method1(T arg1){}
+}
+```
+
+### 泛型方法
+
+``` java
+public <T> String test(T arg1){
+    
+}
+
+public <T> T test(T arg1){
+    
+}
+```
+
+尖括号声明了一个类型参数T
+
+## 类型擦除
+
+编译后，泛型相关的信息会被擦除掉
+
+``` java
+class Test<T>{
+    private T value;
+}
+```
+
+
+
+如果是Test<String\>类型擦除之后变为Test，其中T被Object替代
+
+``` java
+class Test{
+    private Object value;
+}
+```
+
+如果是Test<T extends String\>类型擦除之后变为Test，其中T被String替代
+
+``` java
+class Test{
+    private String value;
+}
+```
+
+如果是Test<T super Integer\>类型擦除之后变为Test，其中T被Integer替代
+
+``` java
+class Test{
+    private Integer value;
+}
+```
+
+
+
+
+
+# 集合
+
+## Collection
+
+### List
+
+#### ArrayList、LinkedList、Vector、Stack
+
+**ArrayList**：
+
+底层数据结构为数组，线程不安全，可随机访问，在中间插入效率低，查找效率高
+
+扩容方式为
+
+```
+int newCapacity = oldCapacity + (oldCapacity >> 1);
+//原大小+原大小/2
+//>>是右移
+```
+
+**LinkedList**：
+
+底层数据结构为链表，线程不安全，不可随机访问，插入效率高，查找效率低
+
+**Vector**：
+
+底层数据结构为数组，线程安全
+
+扩容方式：在创建Vector对象时可以指定capacityIncrement的值，默认为0
+
+```
+int newCapacity = oldCapacity + ((capacityIncrement > 0) ?
+                                 capacityIncrement : oldCapacity);
+```
+
+**Stack**：
+
+是Vector的实现类
+
+### Set
+
+#### HashSet、LinkedHashSet、TreeSet
+
+HashSet：
+
+底层是Hash Table（数组），无法存放重复数据
+
+LinkedHashSet：
+
+HashSet的升级版，可以记录元素的插入顺序
+
+TreeSet：
+
+底层是二叉树，若没有指定的comparator，则使用Key所对应类型的comparator
+
+比如说Key是Int类型的，则默认会使用Integer的比较方法
+
+## 迭代器
+
+迭代器是Collection类的实现类中的一个内部类，其中分为Iterator和ListIterator
+
+**Iterator：**
+
+可以对List和Set进行遍历
+
+只能向后遍历，不能向前遍历
+
+**ListIterator：**
+
+只能对List进行遍历
+
+可向前和向后遍历
+
+
+
+## Map
+
+### Hashtable、HashMap、LinkedHashMap、WeakHashMap、TreeMap、IdentifyHashMap
+
+Hashtable：
+
+底层是Entry链表数组，线程安全
+
+HashMap：
+
+底层是Entry链表数组，线程不安全
+
+默认大小16，默认装在因子0.75，当链表长度≥8，就会变为红黑树，当红黑树中的结点数≤6，就会变回链表
+
+LinkedHashMap：
+
+HashMap的升级版，可以记录元素插入顺序
 
 
 
